@@ -1,6 +1,5 @@
 package com.lenatopoleva.albumsearch.view.adapters
 
-import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -9,6 +8,7 @@ import com.lenatopoleva.albumsearch.databinding.ItemAlbumBinding
 import com.lenatopoleva.albumsearch.model.data.Media
 import com.lenatopoleva.albumsearch.model.data.entity.Album
 import com.lenatopoleva.albumsearch.model.imageloader.IImageLoader
+import com.lenatopoleva.albumsearch.utils.COLLECTION
 import com.lenatopoleva.albumsearch.utils.mapToAlbum
 
 class AlbumListAdapter(
@@ -16,10 +16,6 @@ class AlbumListAdapter(
         private var data: List<Media>,
         private val imageLoader: IImageLoader<ImageView>
 ) : RecyclerView.Adapter<AlbumListAdapter.RecyclerItemViewHolder>() {
-
-    companion object{
-        const val COLLECTION = "collection"
-    }
 
     fun setData(data: List<Media>) {
         this.data = data

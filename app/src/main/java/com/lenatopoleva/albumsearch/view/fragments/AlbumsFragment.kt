@@ -86,9 +86,13 @@ class AlbumsFragment: BaseFragment<AppState>(), BackButtonListener {
     }
 
     override fun hideLoader() {
+        binding.progressBar.visibility = View.GONE
+        binding.albumsListRv.visibility = View.VISIBLE
     }
 
     override fun showLoader() {
+        binding.progressBar.visibility = View.VISIBLE
+        binding.albumsListRv.visibility = View.GONE
     }
 
     override fun handleData(data: List<Media>) {

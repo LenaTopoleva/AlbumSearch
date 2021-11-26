@@ -4,12 +4,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.lenatopoleva.albumsearch.databinding.FragmentAlbumDetailsBinding
 import com.lenatopoleva.albumsearch.model.data.AppState
 import com.lenatopoleva.albumsearch.model.data.Media
+import com.lenatopoleva.albumsearch.model.data.entity.Album
+import com.lenatopoleva.albumsearch.model.imageloader.IImageLoader
+import com.lenatopoleva.albumsearch.utils.COLLECTION
+import com.lenatopoleva.albumsearch.utils.mapToAlbum
 import com.lenatopoleva.albumsearch.utils.network.isOnline
 import com.lenatopoleva.albumsearch.utils.ui.BackButtonListener
 import com.lenatopoleva.albumsearch.view.adapters.TrackListAdapter
@@ -31,6 +36,10 @@ class AlbumDetailsFragment: BaseFragment<AppState>(), BackButtonListener {
 
     override val model: AlbumDetailsViewModel by lazy {
         ViewModelProvider(this, getKoin().get()).get(AlbumDetailsViewModel::class.java)
+    }
+
+    val imageLoader: IImageLoader<ImageView> by lazy {
+        getKoin().get()
     }
 
     private var _binding: FragmentAlbumDetailsBinding? = null
@@ -68,18 +77,33 @@ class AlbumDetailsFragment: BaseFragment<AppState>(), BackButtonListener {
     }
 
     override fun hideLoader() {
+        binding.views.visibility = View.VISIBLE
+        binding.progressBar.visibility = View.INVISIBLE
     }
 
     override fun showLoader() {
+        binding.views.visibility = View.INVISIBLE
+        binding.progressBar.visibility = View.VISIBLE
     }
 
     override fun handleData(data: List<Media>) {
-        updateUi()
+        updateUi(data)
         setDataToAdapter(data)
     }
 
-    private fun updateUi(){
-        //
+    private fun updateUi(data: List<Media>){
+        val album: Album
+        if (data.first().wrapperType == COLLECTION) {
+            album = data.first().mapToAlbum()
+            with(binding){
+                albumInfoTv.text = album.collectionName
+                artistInfoTv.text = album.artistName
+                genreInfoTv.text = album.primaryGenreName
+                countryInfoTv.text = album.country
+                releaseDateInfoTv.text = album.releaseDate.substring(0, 10)
+                imageLoader.loadInto(album.artworkUrl100, artworkIv)
+            }
+        }
     }
 
     private fun setDataToAdapter(data: List<Media>){

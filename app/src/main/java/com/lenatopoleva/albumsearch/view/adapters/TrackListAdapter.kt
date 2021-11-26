@@ -6,13 +6,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.lenatopoleva.albumsearch.databinding.ItemSongBinding
 import com.lenatopoleva.albumsearch.model.data.Media
 import com.lenatopoleva.albumsearch.model.data.entity.Track
+import com.lenatopoleva.albumsearch.utils.TRACK
 import com.lenatopoleva.albumsearch.utils.mapToTrack
 
 class TrackListAdapter(private var data: List<Media>) : RecyclerView.Adapter<TrackListAdapter.RecyclerItemViewHolder>() {
-
-    companion object{
-        const val TRACK = "track"
-    }
 
     fun setData(data: List<Media>) {
         //Sublist because first item in data list is collection
@@ -41,7 +38,7 @@ class TrackListAdapter(private var data: List<Media>) : RecyclerView.Adapter<Tra
             val track: Track
             if(data.wrapperType == TRACK) track = data.mapToTrack()
             else return
-            track?.let {
+            track.let {
                 with(binding) {
                     trackNumberTv.text = it.trackNumber.toString()
                     trackNameTv.text = it.trackName

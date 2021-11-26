@@ -15,7 +15,11 @@ fun Media.mapToAlbum(): Album {
         collectionId = this.collectionId,
         artistName = this.artistName,
         collectionName = this.collectionName,
-        artworkUrl100 = this.artworkUrl100
+        artworkUrl100 = this.artworkUrl100,
+        trackCount = this.trackCount,
+        primaryGenreName = this.primaryGenreName,
+        country = this.country,
+        releaseDate = this.releaseDate
     )
 }
 
@@ -25,6 +29,7 @@ fun Media.mapToTrack(): Track {
         collectionId = this.collectionId,
         artistName = this.artistName,
         collectionName = this.collectionName,
+        artworkUrl100 = this.artworkUrl100,
         trackName = this.trackName,
         trackNumber = this.trackNumber,
         trackTimeMillis = this.trackTimeMillis
