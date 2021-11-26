@@ -12,10 +12,10 @@ class AlbumDetailsInteractor(
     override suspend fun getAlbumTracksById(albumId: Int, fromRemoteSource: Boolean): AppState {
         val appState: AppState
         if (fromRemoteSource) {
-            appState = AppState.Success(repositoryRemote.getAlbumTracksById(albumId))
+            appState = AppState.Success(repositoryRemote.getAlbumDetailsById(albumId))
             repositoryLocal.saveAlbumTracksToDB(appState)
         } else {
-            appState = AppState.Success(repositoryLocal.getAlbumTracksById(albumId))
+            appState = AppState.Success(repositoryLocal.getAlbumDetailsById(albumId))
         }
         return appState
     }
