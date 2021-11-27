@@ -1,6 +1,5 @@
 # AlbumSearch
-iTunes API client, search albums by title and shows details by click.
-+ caches data in DB
+iTunes API client, search albums by title and shows details by click; caches data in DB.
 
 - MVVM + MVI
 - Retrofit
