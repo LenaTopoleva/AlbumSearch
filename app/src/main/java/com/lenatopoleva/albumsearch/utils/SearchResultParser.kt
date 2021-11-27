@@ -35,3 +35,5 @@ fun Media.mapToTrack(): Track {
         trackTimeMillis = this.trackTimeMillis
     )
 }
+
+fun List<Media>.filterFromCollections(): List<Media> = this.filterNot { it.wrapperType == COLLECTION }

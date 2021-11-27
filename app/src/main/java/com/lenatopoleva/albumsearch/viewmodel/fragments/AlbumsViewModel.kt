@@ -2,8 +2,6 @@ package com.lenatopoleva.albumsearch.viewmodel.fragments
 
 import androidx.lifecycle.LiveData
 import com.lenatopoleva.albumsearch.model.data.AppState
-import com.lenatopoleva.albumsearch.model.data.Media
-import com.lenatopoleva.albumsearch.model.data.entity.Album
 import com.lenatopoleva.albumsearch.model.dispatchers.IDispatcherProvider
 import com.lenatopoleva.albumsearch.model.interactor.IAlbumsInteractor
 import com.lenatopoleva.albumsearch.navigation.Screens

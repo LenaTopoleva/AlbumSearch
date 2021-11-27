@@ -14,6 +14,7 @@ import com.lenatopoleva.albumsearch.model.data.Media
 import com.lenatopoleva.albumsearch.model.data.entity.Album
 import com.lenatopoleva.albumsearch.model.imageloader.IImageLoader
 import com.lenatopoleva.albumsearch.utils.COLLECTION
+import com.lenatopoleva.albumsearch.utils.filterFromCollections
 import com.lenatopoleva.albumsearch.utils.mapToAlbum
 import com.lenatopoleva.albumsearch.utils.network.isOnline
 import com.lenatopoleva.albumsearch.utils.ui.BackButtonListener
@@ -93,7 +94,7 @@ class AlbumDetailsFragment: BaseFragment<AppState>(), BackButtonListener {
 
     private fun updateUi(data: List<Media>){
         val album: Album
-        if (data.first().wrapperType == COLLECTION) {
+        if (data.isNotEmpty() && data.first().wrapperType == COLLECTION) {
             album = data.first().mapToAlbum()
             with(binding){
                 albumInfoTv.text = album.collectionName
@@ -109,8 +110,8 @@ class AlbumDetailsFragment: BaseFragment<AppState>(), BackButtonListener {
     private fun setDataToAdapter(data: List<Media>){
         if (adapter == null){
             binding.trackListRv.layoutManager = LinearLayoutManager(context)
-            binding.trackListRv.adapter = TrackListAdapter(data.subList(1, data.size))
-        } else adapter!!.setData(data)
+            binding.trackListRv.adapter = TrackListAdapter(data.filterFromCollections())
+        } else adapter!!.setData(data.filterFromCollections())
     }
 
     override fun backPressed() = model.backPressed()

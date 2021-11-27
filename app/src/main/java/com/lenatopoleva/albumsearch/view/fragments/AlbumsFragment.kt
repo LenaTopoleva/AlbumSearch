@@ -17,6 +17,7 @@ import com.lenatopoleva.albumsearch.utils.network.isOnline
 import com.lenatopoleva.albumsearch.utils.ui.BackButtonListener
 import com.lenatopoleva.albumsearch.view.adapters.AlbumListAdapter
 import com.lenatopoleva.albumsearch.view.base.BaseFragment
+import com.lenatopoleva.albumsearch.viewmodel.activity.MainActivityViewModel
 import com.lenatopoleva.albumsearch.viewmodel.fragments.AlbumsViewModel
 import org.koin.android.ext.android.getKoin
 
@@ -27,7 +28,11 @@ class AlbumsFragment: BaseFragment<AppState>(), BackButtonListener {
     }
 
     override val model: AlbumsViewModel by lazy {
-        ViewModelProvider(this, getKoin().get()).get(AlbumsViewModel::class.java)
+        ViewModelProvider(this, getKoin().get())[AlbumsViewModel::class.java]
+    }
+
+    private val mainActivityModel by lazy {
+        ViewModelProvider(requireActivity(),  getKoin().get())[MainActivityViewModel::class.java]
     }
 
     private val imageLoader: IImageLoader<ImageView> by lazy {
@@ -74,6 +79,7 @@ class AlbumsFragment: BaseFragment<AppState>(), BackButtonListener {
         with(binding) {
             searchTextInputLayout.editText?.setOnKeyListener { _, keyCode, event ->
                 if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
+                    mainActivityModel.resetAlertDialogState()
                     isNetworkAvailable = isOnline(requireActivity().applicationContext)
                     model.getData(searchInput.text.toString(), isNetworkAvailable)
                     true

@@ -1,11 +1,14 @@
 package com.lenatopoleva.albumsearch.view.base
 
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.lenatopoleva.albumsearch.R
 import com.lenatopoleva.albumsearch.model.data.AppState
 import com.lenatopoleva.albumsearch.model.data.Media
 import com.lenatopoleva.albumsearch.utils.ui.AlertDialogFragment
+import com.lenatopoleva.albumsearch.viewmodel.activity.MainActivityViewModel
 import com.lenatopoleva.albumsearch.viewmodel.base.BaseViewModel
+import org.koin.android.ext.android.getKoin
 
 abstract class BaseFragment<T : AppState> : Fragment() {
 
@@ -15,8 +18,11 @@ abstract class BaseFragment<T : AppState> : Fragment() {
     }
 
     abstract val model: BaseViewModel<T>
-
     protected var isNetworkAvailable: Boolean = false
+
+    private val mainActivityModel by lazy {
+        ViewModelProvider(requireActivity(),  getKoin().get())[MainActivityViewModel::class.java]
+    }
 
     protected fun renderData(appState: T) {
         when (appState) {
@@ -24,17 +30,23 @@ abstract class BaseFragment<T : AppState> : Fragment() {
                 hideLoader()
                 appState.data?.let {
                     if (it.isEmpty()) {
-                        showAlertDialog(
+                        handleData(it)
+                        if (!mainActivityModel.isAlertDialogHidden) {
+                            showAlertDialog(
                             getString(R.string.dialog_tittle_sorry),
                             getString(R.string.empty_server_response_on_success)
                         )
+                    }
                     } else {
                         handleData(it)
                     }
-                } ?: showAlertDialog(
-                    getString(R.string.dialog_tittle_sorry),
-                    getString(R.string.empty_server_response_on_success)
-                )
+                } ?:
+                if (!mainActivityModel.isAlertDialogHidden) {
+                    showAlertDialog(
+                        getString(R.string.dialog_tittle_sorry),
+                        getString(R.string.empty_server_response_on_success)
+                    )
+                }
             }
             is AppState.Loading -> {
                 showLoader()

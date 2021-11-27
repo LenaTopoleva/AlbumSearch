@@ -12,8 +12,7 @@ import com.lenatopoleva.albumsearch.utils.mapToTrack
 class TrackListAdapter(private var data: List<Media>) : RecyclerView.Adapter<TrackListAdapter.RecyclerItemViewHolder>() {
 
     fun setData(data: List<Media>) {
-        //Sublist because first item in data list is collection
-        this.data = data.subList(1, data.size)
+        this.data = data
         notifyDataSetChanged()
     }
 
@@ -27,14 +26,14 @@ class TrackListAdapter(private var data: List<Media>) : RecyclerView.Adapter<Tra
     }
 
     override fun onBindViewHolder(holder: TrackListAdapter.RecyclerItemViewHolder, position: Int) {
-        holder.bind(data[position], position)
+        holder.bind(data[position])
     }
 
     override fun getItemCount() = data.size
 
     inner class RecyclerItemViewHolder(private val binding: ItemSongBinding) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(data: Media, position: Int) {
+        fun bind(data: Media) {
             val track: Track
             if(data.wrapperType == TRACK) track = data.mapToTrack()
             else return
