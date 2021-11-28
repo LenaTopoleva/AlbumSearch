@@ -1,13 +1,17 @@
 package com.lenatopoleva.albumsearch.viewmodel.base
 
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.lenatopoleva.albumsearch.model.data.AppState
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.MutableStateFlow
 
 abstract class BaseViewModel<T : AppState> : ViewModel() {
 
-    val mutableAppStateLiveData: MutableLiveData<T> = MutableLiveData()
+    abstract val initialState: T
+
+    val mutableAppStateFlow: MutableStateFlow<T> by lazy {
+        MutableStateFlow(initialState)
+    }
 
     protected val viewModelCoroutineScope = CoroutineScope(
         Dispatchers.Main

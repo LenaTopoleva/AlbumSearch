@@ -1,10 +1,11 @@
 package com.lenatopoleva.albumsearch.viewmodel.fragments
 
-import androidx.lifecycle.LiveData
 import com.lenatopoleva.albumsearch.model.data.AppState
 import com.lenatopoleva.albumsearch.model.dispatchers.IDispatcherProvider
 import com.lenatopoleva.albumsearch.model.interactor.IAlbumDetailsInteractor
 import com.lenatopoleva.albumsearch.viewmodel.base.BaseViewModel
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import ru.terrakok.cicerone.Router
@@ -14,14 +15,17 @@ class AlbumDetailsViewModel(private val albumDetailsAlbumsInteractor: IAlbumDeta
                             private val dispatcherProvider: IDispatcherProvider
 ): BaseViewModel<AppState>() {
 
-    private val appStateLiveData: LiveData<AppState> = mutableAppStateLiveData
+    override val initialState: AppState
+        get() = AppState.Initial
 
-    fun subscribe(): LiveData<AppState> {
-        return appStateLiveData
+    private val appStateFlow: StateFlow<AppState> = mutableAppStateFlow.asStateFlow()
+
+    fun subscribe(): StateFlow<AppState> {
+        return appStateFlow
     }
 
     fun getData(albumId: Int, isOnline: Boolean) {
-        mutableAppStateLiveData.value = AppState.Loading
+        mutableAppStateFlow.value = AppState.Loading
         cancelJob()
         viewModelCoroutineScope.launch {
             getDataFromInteractor(albumId, isOnline)
@@ -30,12 +34,12 @@ class AlbumDetailsViewModel(private val albumDetailsAlbumsInteractor: IAlbumDeta
 
     private suspend fun getDataFromInteractor(albumId: Int, isOnline: Boolean) {
         withContext(dispatcherProvider.io()){
-            mutableAppStateLiveData.postValue(albumDetailsAlbumsInteractor.getAlbumTracksById(albumId, isOnline))
+            mutableAppStateFlow.value = (albumDetailsAlbumsInteractor.getAlbumTracksById(albumId, isOnline))
         }
     }
 
     override fun handleError(error: Throwable) {
-        mutableAppStateLiveData.postValue(AppState.Error(error))
+        mutableAppStateFlow.value = (AppState.Error(error))
         router.exit()
     }
 
