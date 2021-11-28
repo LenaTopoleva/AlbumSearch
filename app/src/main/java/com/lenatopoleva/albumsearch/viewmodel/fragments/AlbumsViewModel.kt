@@ -1,28 +1,31 @@
 package com.lenatopoleva.albumsearch.viewmodel.fragments
 
-import androidx.lifecycle.LiveData
 import com.lenatopoleva.albumsearch.model.data.AppState
 import com.lenatopoleva.albumsearch.model.dispatchers.IDispatcherProvider
 import com.lenatopoleva.albumsearch.model.interactor.IAlbumsInteractor
 import com.lenatopoleva.albumsearch.navigation.Screens
 import com.lenatopoleva.albumsearch.viewmodel.base.BaseViewModel
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import ru.terrakok.cicerone.Router
 
 class AlbumsViewModel(private val albumsAlbumsInteractor: IAlbumsInteractor,
                       private val router: Router,
-                      private val dispatcherProvider: IDispatcherProvider
+                      private val dispatcherProvider: IDispatcherProvider,
 ): BaseViewModel<AppState>() {
 
-    private val appStateLiveData: LiveData<AppState> = mutableAppStateLiveData
+    override val initialState: AppState = AppState.Initial
 
-    fun subscribe(): LiveData<AppState> {
-        return appStateLiveData
+    private val appStateFlow: StateFlow<AppState> = mutableAppStateFlow.asStateFlow()
+
+    fun subscribe(): StateFlow<AppState> {
+        return appStateFlow
     }
 
     fun getData(title: String, isOnline: Boolean) {
-        mutableAppStateLiveData.value = AppState.Loading
+        mutableAppStateFlow.value = AppState.Loading
         cancelJob()
         viewModelCoroutineScope.launch {
             getDataFromInteractor(title, isOnline)
@@ -31,12 +34,12 @@ class AlbumsViewModel(private val albumsAlbumsInteractor: IAlbumsInteractor,
 
     private suspend fun getDataFromInteractor(title: String, isOnline: Boolean) {
         withContext(dispatcherProvider.io()){
-            mutableAppStateLiveData.postValue(albumsAlbumsInteractor.getAlbumsByTitle(title, isOnline))
+            mutableAppStateFlow.value = (albumsAlbumsInteractor.getAlbumsByTitle(title, isOnline))
         }
     }
 
     override fun handleError(error: Throwable) {
-        mutableAppStateLiveData.postValue(AppState.Error(error))
+        mutableAppStateFlow.value = (AppState.Error(error))
     }
 
     override fun backPressed(): Boolean {
