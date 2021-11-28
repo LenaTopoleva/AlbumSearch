@@ -5,7 +5,7 @@ iTunes API client, search albums by title and shows details by click; caches dat
 - Retrofit
 - Room
 - Coroutines
-- LiveData
+- Coroutines Flow
 - Koin
 - Glide
 - ViewBinding
